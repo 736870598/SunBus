@@ -41,5 +41,5 @@
     SunBus.getDefault().postWait("1234", "MainActivity发的事件");
 
 
-
+#### 说明：事件标签只支持string类型的，事件方法可接受任意的参数。
 
