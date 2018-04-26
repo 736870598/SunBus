@@ -43,3 +43,8 @@
 
 #### 说明：事件标签只支持string类型的，事件方法可接受任意的参数。
 
+#### 升级说明：
+
+    1.0.0 基础版本
+    1.1.0 支持kotlin  kotlin 反射的时候：compile 'org.jetbrains.kotlin:kotlin-reflect:xx.xx'
+

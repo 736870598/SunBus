@@ -37,6 +37,8 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     public void startActivity2(View view){
+        SunBus.getDefault().postWait("99", "SecondActivity发的事件");
+        startActivity(new Intent(this, ThridActivity.class));
     }
 
     public void sendClick(View view){
