@@ -43,6 +43,15 @@
 
 #### 说明：事件标签只支持string类型的，事件方法可接受任意的参数。
 
+
+#### 混淆配置
+
+    -keepattributes *Annotation*
+    
+    -keepclassmembers class ** {
+        @com.sunxiaoyu.sunbus.core.Subscribe <methods>;
+    }
+
 #### 升级说明：
 
     1.0.0 基础版本
