@@ -117,12 +117,13 @@ public class SunBus {
                 if (subscribeAnnotation != null){
                     //获取注解上的标签
                     String[] values = subscribeAnnotation.value();
+                    boolean isOne = subscribeAnnotation.isOne();
                     //获取方法参数
                     Class<?>[] parameterTypes = method.getParameterTypes();
                     for (String value : values) {
                         method.setAccessible(true);
                         //将标签，方法名，方法参数封装好保存到list中
-                        SubscriberMethod subscriberMethod = new SubscriberMethod(value, method, parameterTypes);
+                        SubscriberMethod subscriberMethod = new SubscriberMethod(value, method, parameterTypes, isOne);
                         subscriberMethods.add(subscriberMethod);
                     }
                 }
@@ -153,6 +154,9 @@ public class SunBus {
                 if (objects != null && !objects.isEmpty()){
                     for (Object[] object : objects) {
                         post(subscriber, subscriberMethod, object);
+                        if (subscriberMethod.isOne()){
+                            break;
+                        }
                     }
                 }
             }

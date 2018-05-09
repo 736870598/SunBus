@@ -20,7 +20,7 @@ class ThridActivity : AppCompatActivity(){
         SunBus.getDefault().register(this)
     }
 
-    @Subscribe("99")
+    @Subscribe("99","2323")
     fun post(str: String){
         Log.v("sunxy", "ThridActivity 99 收到事件：" + str)
     }

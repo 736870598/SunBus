@@ -13,10 +13,12 @@ public class SubscriberMethod {
     private String label;
     private Method method;
     private Class<?>[] parameterTypes;
+    private boolean isOne;
 
-    public SubscriberMethod(String label, Method method, Class<?>[] parameterTypes) {
+    public SubscriberMethod(String label, Method method, Class<?>[] parameterTypes, boolean isOne) {
         this.label = label;
         this.method = method;
+        this.isOne = isOne;
         this.parameterTypes = parameterTypes;
     }
 
@@ -30,5 +32,9 @@ public class SubscriberMethod {
 
     public Class<?>[] getParameterTypes() {
         return parameterTypes;
+    }
+
+    public boolean isOne() {
+        return isOne;
     }
 }

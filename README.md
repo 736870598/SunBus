@@ -11,14 +11,25 @@
      SunBus.getDefault().unRegister(this);
 
 #### 可选方法：
-##### 在register中会调用onStart方法，但是在onStop之前多次调用onStart只会执行一次，这俩个方法完全可以用register和unregister代替，但是相对来说操作更少一点
+##### 在register和unregister期间调用，相对register和unregister来说操作更少一点；在register中会调用onStart方法，但是在onStop之前多次调用onStart只会执行一次
 
      SunBus.getDefault().onStart(this);
      SunBus.getDefault().onStop(this);
 
 #### 注册事件：
 
-    @Subscribe("123456")
+     * 参数说明：
+     *     value  订阅的标签 (string数组)
+     *     isOne  其他地方通过postWait方式发送事件时，如果接受该事件的方法刚好不在线或者吊桶了onStop（）后，
+     *            该事件将会被缓存下来，在接受者上线的时候，从缓存中拿到该事件并传递给接受者，如果接受者设置了
+     *            isOne为true的话，那么如果该标签有很多事件的话只会调用接受者一次。  （默认为false）
+
+    @Subscribe("post0")
+    private void post(String str){
+        Log.v("sunxy", "MainActivity收到事件 123456, str =" + str);
+    }
+
+    @Subscribe(value = {"post1", "post2"}, isOne = true)
     private void post(String str){
         Log.v("sunxy", "MainActivity收到事件 123456, str =" + str);
     }
@@ -41,10 +52,26 @@
     SunBus.getDefault().postWait("1234", "MainActivity发的事件");
 
 
-#### 说明：事件标签只支持string类型的，事件方法可接受任意的参数。
+#### 特别注意：
 
-#### 升级说明：
+   * 事件标签只支持string类型的，事件方法可接受任意的参数。
+   * 在kotlin中使用的话必须道义以下引用：
+
+            compile 'org.jetbrains.kotlin:kotlin-reflect:xx.xx.xx'
+   * 关于混淆:
+
+          -keepclassmembers class ** {
+              @com.sunxiaoyu.sunbus.core.Subscribe <methods>;
+          }
+
+#### 升级说明（ jar包保存在JAR文件夹下 ）：
 
     1.0.0 基础版本
-    1.1.0 支持kotlin  kotlin 反射的时候：compile 'org.jetbrains.kotlin:kotlin-reflect:xx.xx'
+    1.1.0 支持kotlin
+    1.2.0 加入标识可以设置粘性事件只调用一次
+
+
+
+
+
 
