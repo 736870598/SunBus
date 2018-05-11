@@ -51,6 +51,14 @@
      */
     SunBus.getDefault().postWait("1234", "MainActivity发的事件");
 
+#### 移除事件：
+
+    /**
+    * 移除事件 （可移除通过 postWait 发送还没有接收的事件）
+    * @param label    事件标签
+    * @param params   参数  如果不传则将缓存的该标签的所有事件全部移除，否则匹配参数相同才移除
+    */
+    SunBus.getDefault().removePost("post", "123");
 
 #### 特别注意：
 
@@ -69,6 +77,7 @@
     1.0.0 基础版本
     1.1.0 支持kotlin
     1.2.0 加入标识可以设置粘性事件只调用一次
+    1.2.1 增加了可移除缓存中事件的方法
 
 
 

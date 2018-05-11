@@ -247,6 +247,29 @@ public class SunBus {
     }
 
     /**
+     * 移除事件 （可移除通过 postWait 发送还没有接收的事件）
+     * @param label    事件标签
+     * @param params   参数  如果不传则将缓存的该标签的所有事件全部移除，否则匹配参数相同才移除
+     */
+    public void removePost(String label, Object...params){
+        if (params == null){
+            POST_CACHE.remove(label);
+        }else{
+            List<Object[]> objects = POST_CACHE.get(label);
+            if (objects != null){
+                Iterator<Object[]> iterator = objects.iterator();
+                while (iterator.hasNext()){
+                    Object[] object = iterator.next();
+                    if (params == object){
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
      * 发送事件
      * @param subscriber  object
      * @param method      方法名

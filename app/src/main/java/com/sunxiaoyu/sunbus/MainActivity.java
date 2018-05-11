@@ -11,6 +11,7 @@ import com.sunxiaoyu.sunbus.core.SunBus;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Object[] objects = new Object[]{"----------------------"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendClick(View view){
         SunBus.getDefault().postWait("1234", "MainActivity发的事件");
+    }
+
+    public void sendClick1(View view){
+        SunBus.getDefault().postWait("1234", objects);
+    }
+
+    public void removePost(View view){
+        SunBus.getDefault().removePost("post", "123");
     }
 
     @Subscribe("123456")

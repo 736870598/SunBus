@@ -45,7 +45,7 @@ public class SecondActivity extends AppCompatActivity {
         SunBus.getDefault().postWait("123456", "SecondActivity发的事件");
     }
 
-    @Subscribe(value = {"post1", "post2"}, isOne = true)
+    @Subscribe(value = {"1234", "post2"})
     private void post(String str){
         Log.v("sunxy", "SecondActivity收到事件 1234, str =" + str);
     }
