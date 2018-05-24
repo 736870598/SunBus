@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import com.sunxiaoyu.sunbus.core.Subscribe
-import com.sunxiaoyu.sunbus.core.SunBus
+import com.sunxiaoyu.sunbus.core.SunEventBus
 
 /**
  * --
@@ -17,7 +17,7 @@ class ThridActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        SunBus.getDefault().register(this)
+        SunEventBus.getDefault().register(this)
     }
 
     @Subscribe("99","2323")
@@ -26,7 +26,7 @@ class ThridActivity : AppCompatActivity(){
     }
 
     fun sendClick(view : View){
-        SunBus.getDefault().post("99", "-----------------")
+        SunEventBus.getDefault().post("99", "-----------------")
     }
 
 }

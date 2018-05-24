@@ -1,20 +1,20 @@
-# SunBus
+# SunEventBus
 一套高扩展性的通信框架，仿EventBus的核心原理
 
 
 #### 注册事件：
 
-    SunBus.getDefault().register(this);
+    SunEventBus.getDefault().register(this);
 
 #### 解注册：
 
-     SunBus.getDefault().unRegister(this);
+     SunEventBus.getDefault().unRegister(this);
 
 #### 可选方法：
 ##### 在register和unregister期间调用，相对register和unregister来说操作更少一点；在register中会调用onStart方法，但是在onStop之前多次调用onStart只会执行一次
 
-     SunBus.getDefault().onStart(this);
-     SunBus.getDefault().onStop(this);
+     SunEventBus.getDefault().onStart(this);
+     SunEventBus.getDefault().onStop(this);
 
 #### 注册事件：
 
@@ -45,7 +45,7 @@
      * @param label   标签
      * @param params  参数集合
      */
-    SunBus.getDefault().post("1234", "MainActivity发的事件");
+    SunEventBus.getDefault().post("1234", "MainActivity发的事件");
 
      /**
      * 发送事件  （有接受者时直接发送，没有接收者时先保存起来，等有接受者时再进行发送）
@@ -53,7 +53,7 @@
      * @param label     标签
      * @param params    参数集合
      */
-    SunBus.getDefault().postWait("1234", "MainActivity发的事件");
+    SunEventBus.getDefault().postWait("1234", "MainActivity发的事件");
 
 #### 移除事件：
 
@@ -62,7 +62,7 @@
     * @param label    事件标签
     * @param params   参数  如果不传则将缓存的该标签的所有事件全部移除，否则匹配参数相同才移除
     */
-    SunBus.getDefault().removePost("post", "123");
+    SunEventBus.getDefault().removePost("post", "123");
 
 #### 特别注意：
 
@@ -73,7 +73,7 @@
    * 关于混淆:
 
           -keepclassmembers class ** {
-              @com.sunxiaoyu.sunbus.core.Subscribe <methods>;
+              @com.sunxiaoyu.SunEventBus.core.Subscribe <methods>;
           }
 
 #### 升级说明（ jar包保存在JAR文件夹下 ）：

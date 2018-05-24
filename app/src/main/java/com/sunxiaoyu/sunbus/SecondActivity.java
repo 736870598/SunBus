@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.sunxiaoyu.sunbus.core.Subscribe;
-import com.sunxiaoyu.sunbus.core.SunBus;
+import com.sunxiaoyu.sunbus.core.SunEventBus;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -15,34 +15,34 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SunBus.getDefault().register(this);
+        SunEventBus.getDefault().register(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        SunBus.getDefault().onStart(this);
+        SunEventBus.getDefault().onStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        SunBus.getDefault().onStop(this);
+        SunEventBus.getDefault().onStop(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SunBus.getDefault().unRegister(this);
+        SunEventBus.getDefault().unRegister(this);
     }
 
     public void startActivity2(View view){
-        SunBus.getDefault().postWait("99", "SecondActivity发的事件");
+        SunEventBus.getDefault().postWait("99", "SecondActivity发的事件");
         startActivity(new Intent(this, ThridActivity.class));
     }
 
     public void sendClick(View view){
-        SunBus.getDefault().postWait("123456", "SecondActivity发的事件");
+        SunEventBus.getDefault().postWait("123456", "SecondActivity发的事件");
     }
 
     @Subscribe(value = {"1234", "post2"})

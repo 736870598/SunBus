@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
  * Created by sunxy on 2018/4/24 0024.
  */
 
-public class SunBus {
+public class SunEventBus {
 
     /**
      * 方法注解集合（缓存使用）
@@ -52,17 +52,17 @@ public class SunBus {
      */
     private static final Map<Object, Boolean> ACTION_STATUS = new HashMap<>();
 
-    private volatile static SunBus instance;
+    private volatile static SunEventBus instance;
     private volatile ExecutorService executorService;
     private volatile Handler mainHandler;
 
-    private SunBus(){ }
+    private SunEventBus(){ }
 
-    public static SunBus getDefault(){
+    public static SunEventBus getDefault(){
         if (instance == null){
-            synchronized (SunBus.class){
+            synchronized (SunEventBus.class){
                 if (instance == null){
-                    instance = new SunBus();
+                    instance = new SunEventBus();
                 }
             }
         }
@@ -71,7 +71,7 @@ public class SunBus {
 
     private void initHandler(){
         if (mainHandler == null){
-            synchronized (SunBus.class){
+            synchronized (SunEventBus.class){
                 if (mainHandler == null){
                     mainHandler = new Handler(Looper.getMainLooper());
                 }
@@ -81,7 +81,7 @@ public class SunBus {
 
     private void initExecutorService(){
         if (executorService == null){
-            synchronized (SunBus.class){
+            synchronized (SunEventBus.class){
                 if (executorService == null){
                     executorService = Executors.newCachedThreadPool();
                 }
@@ -137,24 +137,35 @@ public class SunBus {
         List<SubscriberMethod> subscriberMethods = METHOD_CACHE.get(subscriberClass);
         if (subscriberMethods == null){
             subscriberMethods = new ArrayList<>();
-            Method[] methods = subscriberClass.getDeclaredMethods();
-            for (Method method : methods) {
-                Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
-                if (subscribeAnnotation != null){
-                    //获取注解上的标签
-                    String[] values = subscribeAnnotation.value();
-                    boolean isOne = subscribeAnnotation.isOne();
-                    ThreadMode threadMode = subscribeAnnotation.threadMode();
-                    //获取方法参数
-                    Class<?>[] parameterTypes = method.getParameterTypes();
-                    for (String value : values) {
-                        method.setAccessible(true);
-                        //将标签，方法名，方法参数封装好保存到list中
-                        SubscriberMethod subscriberMethod = new SubscriberMethod(value, method,
-                                parameterTypes, isOne, threadMode);
-                        subscriberMethods.add(subscriberMethod);
+
+            Class clazz = subscriberClass;
+            while (clazz != null) {
+                String name = clazz.getName();
+                if (name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("android.")) {
+                    break;
+                }
+
+                Method[] methods = subscriberClass.getDeclaredMethods();
+                for (Method method : methods) {
+                    Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                    if (subscribeAnnotation != null){
+                        //获取注解上的标签
+                        String[] values = subscribeAnnotation.value();
+                        boolean isOne = subscribeAnnotation.isOne();
+                        ThreadMode threadMode = subscribeAnnotation.threadMode();
+                        //获取方法参数
+                        Class<?>[] parameterTypes = method.getParameterTypes();
+                        for (String value : values) {
+                            method.setAccessible(true);
+                            //将标签，方法名，方法参数封装好保存到list中
+                            SubscriberMethod subscriberMethod = new SubscriberMethod(value, method,
+                                    parameterTypes, isOne, threadMode);
+                            subscriberMethods.add(subscriberMethod);
+                        }
                     }
                 }
+
+                clazz = clazz.getSuperclass();
             }
             //缓存
             METHOD_CACHE.put(subscriberClass, subscriberMethods);

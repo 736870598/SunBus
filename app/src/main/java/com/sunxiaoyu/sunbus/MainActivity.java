@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunxiaoyu.sunbus.core.Subscribe;
-import com.sunxiaoyu.sunbus.core.SunBus;
+import com.sunxiaoyu.sunbus.core.SunEventBus;
 import com.sunxiaoyu.sunbus.core.ThreadMode;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SunBus.getDefault().register(this);
+        SunEventBus.getDefault().register(this);
 
         textView = findViewById(R.id.textView);
     }
@@ -27,19 +27,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SunBus.getDefault().onStart(this);
+        SunEventBus.getDefault().onStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        SunBus.getDefault().onStop(this);
+        SunEventBus.getDefault().onStop(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SunBus.getDefault().unRegister(this);
+        SunEventBus.getDefault().unRegister(this);
     }
 
     public void startActivity2(View view){
@@ -50,18 +50,18 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SunBus.getDefault().post("change", "thread, changeBtnText");
+                SunEventBus.getDefault().post("change", "thread, changeBtnText");
             }
         }).start();
 //        SunBus.getDefault().postWait("1234", "MainActivity发的事件");
     }
 
     public void sendClick1(View view){
-        SunBus.getDefault().postWait("1234", objects);
+        SunEventBus.getDefault().postWait("1234", objects);
     }
 
     public void removePost(View view){
-        SunBus.getDefault().removePost("post", "123");
+        SunEventBus.getDefault().removePost("post", "123");
     }
 
     @Subscribe("123456")
