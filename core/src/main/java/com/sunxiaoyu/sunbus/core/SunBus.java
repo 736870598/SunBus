@@ -1,11 +1,16 @@
 package com.sunxiaoyu.sunbus.core;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -47,8 +52,9 @@ public class SunBus {
      */
     private static final Map<Object, Boolean> ACTION_STATUS = new HashMap<>();
 
-
     private volatile static SunBus instance;
+    private volatile ExecutorService executorService;
+    private volatile Handler mainHandler;
 
     private SunBus(){ }
 
@@ -61,6 +67,26 @@ public class SunBus {
             }
         }
         return instance;
+    }
+
+    private void initHandler(){
+        if (mainHandler == null){
+            synchronized (SunBus.class){
+                if (mainHandler == null){
+                    mainHandler = new Handler(Looper.getMainLooper());
+                }
+            }
+        }
+    }
+
+    private void initExecutorService(){
+        if (executorService == null){
+            synchronized (SunBus.class){
+                if (executorService == null){
+                    executorService = Executors.newCachedThreadPool();
+                }
+            }
+        }
     }
 
     /**
@@ -118,12 +144,14 @@ public class SunBus {
                     //获取注解上的标签
                     String[] values = subscribeAnnotation.value();
                     boolean isOne = subscribeAnnotation.isOne();
+                    ThreadMode threadMode = subscribeAnnotation.threadMode();
                     //获取方法参数
                     Class<?>[] parameterTypes = method.getParameterTypes();
                     for (String value : values) {
                         method.setAccessible(true);
                         //将标签，方法名，方法参数封装好保存到list中
-                        SubscriberMethod subscriberMethod = new SubscriberMethod(value, method, parameterTypes, isOne);
+                        SubscriberMethod subscriberMethod = new SubscriberMethod(value, method,
+                                parameterTypes, isOne, threadMode);
                         subscriberMethods.add(subscriberMethod);
                     }
                 }
@@ -275,7 +303,49 @@ public class SunBus {
      * @param method      方法名
      * @param params      参数
      */
-    private void post(Object subscriber, SubscriberMethod method, Object...params){
+    private void post(final Object subscriber, final SubscriberMethod method, final Object...params){
+        switch (method.getThreadMode()){
+            case PostThread:
+                sendMethod(subscriber, method, params);
+                break;
+            case MainThread:
+                if (Looper.getMainLooper() == Looper.myLooper()){
+                    //当前就是主线程
+                    sendMethod(subscriber, method, params);
+                }else{
+                    //当前是非主线程，
+                    initHandler();
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendMethod(subscriber, method, params);
+                        }
+                    });
+                }
+                break;
+            case AsyncThread:
+                if (Looper.getMainLooper() == Looper.myLooper()){
+                    //当前就是主线程
+                    initExecutorService();
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendMethod(subscriber, method, params);
+                        }
+                    });
+
+                }else{
+                    //当前是非主线程，
+                    sendMethod(subscriber, method, params);
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void sendMethod(Object subscriber, SubscriberMethod method, Object...params){
         //组装参数
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] invokeParams = new Object[parameterTypes.length];

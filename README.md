@@ -19,10 +19,14 @@
 #### 注册事件：
 
      * 参数说明：
-     *     value  订阅的标签 (string数组)
-     *     isOne  其他地方通过postWait方式发送事件时，如果接受该事件的方法刚好不在线或者执行了onStop（）后，
-     *            该事件将会被缓存下来，在接受者上线的时候，从缓存中拿到该事件并传递给接受者，如果接受者设置了
-     *            isOne为true的话，那么如果该标签有很多事件的话只会调用接受者一次。  （默认为false）
+     * value      订阅的标签 (string数组)
+     * isOne      其他地方通过postWait方式发送事件时，如果接受该事件的方法刚好不在线或者执行了onStop（）后，
+     *             该事件将会被缓存下来，在接受者上线的时候，从缓存中拿到该事件并传递给接受者，如果接受者设置了
+     *             isOne为true的话，那么如果该标签有很多事件的话只会调用接受者一次。  （默认为false）
+     * threadMode 设置接收事件所在的线程
+     *             ThreadMode.MainThread  设置接收事件在主线程，
+     *             ThreadMode.AsyncThread 设置接收事件在异步线程，
+     *             ThreadMode.PostThread  设置接收事件在发送事件的线程；（默认为 ThreadMode.PostThread ）
 
     @Subscribe("post0")
     private void post(String str){
@@ -78,6 +82,7 @@
     1.1.0 支持kotlin
     1.2.0 加入标识可以设置粘性事件只调用一次
     1.2.1 增加了可移除缓存中事件的方法
+    1.2.2 增加了可以控制接收线程的方法
 
 
 

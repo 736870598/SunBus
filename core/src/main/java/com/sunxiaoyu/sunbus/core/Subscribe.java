@@ -22,4 +22,5 @@ import java.lang.annotation.Target;
 public @interface Subscribe {
     String[] value();
     boolean isOne() default false;
+    ThreadMode threadMode() default ThreadMode.PostThread;
 }

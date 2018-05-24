@@ -14,12 +14,15 @@ public class SubscriberMethod {
     private Method method;
     private Class<?>[] parameterTypes;
     private boolean isOne;
+    private ThreadMode threadMode;
 
-    public SubscriberMethod(String label, Method method, Class<?>[] parameterTypes, boolean isOne) {
+    public SubscriberMethod(String label, Method method,
+                            Class<?>[] parameterTypes, boolean isOne, ThreadMode threadMode) {
         this.label = label;
         this.method = method;
-        this.isOne = isOne;
         this.parameterTypes = parameterTypes;
+        this.isOne = isOne;
+        this.threadMode = threadMode;
     }
 
     public String getLabel() {
@@ -36,5 +39,9 @@ public class SubscriberMethod {
 
     public boolean isOne() {
         return isOne;
+    }
+
+    public ThreadMode getThreadMode() {
+        return threadMode;
     }
 }

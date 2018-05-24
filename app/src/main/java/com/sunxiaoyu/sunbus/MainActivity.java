@@ -5,18 +5,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.sunxiaoyu.sunbus.core.Subscribe;
 import com.sunxiaoyu.sunbus.core.SunBus;
+import com.sunxiaoyu.sunbus.core.ThreadMode;
 
 public class MainActivity extends AppCompatActivity {
 
     private Object[] objects = new Object[]{"----------------------"};
+    private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SunBus.getDefault().register(this);
+
+        textView = findViewById(R.id.textView);
     }
 
     @Override
@@ -42,7 +47,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendClick(View view){
-        SunBus.getDefault().postWait("1234", "MainActivity发的事件");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SunBus.getDefault().post("change", "thread, changeBtnText");
+            }
+        }).start();
+//        SunBus.getDefault().postWait("1234", "MainActivity发的事件");
     }
 
     public void sendClick1(View view){
@@ -56,6 +67,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe("123456")
     private void post(String str){
         Log.v("sunxy", "MainActivity收到事件 123456, str =" + str);
+    }
+
+    @Subscribe(value = "change", threadMode = ThreadMode.MainThread)
+    private void changeBtnText(String str){
+        textView.setText(str);
     }
 
 }
