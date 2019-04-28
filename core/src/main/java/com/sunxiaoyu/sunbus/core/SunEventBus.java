@@ -361,7 +361,9 @@ public class SunEventBus {
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] invokeParams = new Object[parameterTypes.length];
         for (int i = 0; i < invokeParams.length; i++) {
-            if (params != null && i < params.length && parameterTypes[i].isInstance(params[i])){
+
+            if (params != null && i < params.length && isSameClassType(params[i], parameterTypes[i])){
+//            if (params != null && i < params.length && parameterTypes[i].isInstance(params[i])){
                 invokeParams[i] = params[i];
             }else{
                 invokeParams[i] = null;
@@ -373,6 +375,52 @@ public class SunEventBus {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isSameClassType(Object paramObj, Class<?> clazz){
+
+        if ( clazz.isInstance(paramObj) ){
+            return true;
+        }
+
+        Class<?> componentType = paramObj.getClass().getComponentType();
+        Class<?> componentType2 = clazz.getComponentType();
+
+        if (componentType == null && componentType2 == null){
+            componentType = paramObj.getClass();
+            componentType2 = clazz;
+        }else if(componentType != null && componentType2 != null){
+
+        }else{
+            return false;
+        }
+
+        if ((componentType2 == int.class || componentType2 == Integer.class) && (componentType == int.class || componentType == Integer.class)){
+            return true;
+        }
+        if ((componentType2 == float.class || componentType2 == Float.class) && (componentType == float.class || componentType == Float.class)){
+            return true;
+        }
+        if ((componentType2 == boolean.class || componentType2 == Boolean.class) && (componentType == boolean.class || componentType == Boolean.class)){
+            return true;
+        }
+        if ((componentType2 == long.class || componentType2 == Long.class) && (componentType == long.class || componentType == Long.class)){
+            return true;
+        }
+        if ((componentType2 == double.class || componentType2 == Double.class) && (componentType == double.class || componentType == Double.class)){
+            return true;
+        }
+        if ((componentType2 == short.class || componentType2 == Short.class) && (componentType == short.class || componentType == Short.class)){
+            return true;
+        }
+        if ((componentType2 == byte.class || componentType2 == Byte.class) && (componentType == byte.class || componentType == Byte.class)){
+            return true;
+        }
+        if ((componentType2 == char.class || componentType2 == Character.class) && (componentType == char.class || componentType == Character.class)){
+            return true;
+        }
+
+        return false;
     }
 
 

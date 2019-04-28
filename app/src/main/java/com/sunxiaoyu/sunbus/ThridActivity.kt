@@ -21,12 +21,17 @@ class ThridActivity : AppCompatActivity(){
     }
 
     @Subscribe("99","2323")
-    fun post(str: String){
+    fun post(str: Integer){
         Log.v("sunxy", "ThridActivity 99 收到事件：" + str)
     }
 
     fun sendClick(view : View){
-        SunEventBus.getDefault().post("99", "-----------------")
+        SunEventBus.getDefault().post("99", 123)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SunEventBus.getDefault().unRegister(this)
     }
 
 }

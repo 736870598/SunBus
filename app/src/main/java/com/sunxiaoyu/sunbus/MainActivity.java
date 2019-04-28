@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SunEventBus.getDefault().post("change", "thread, changeBtnText");
+                SunEventBus.getDefault().post("change", 123, "sdsd");
+//                SunEventBus.getDefault().post("change", new Integer[]{1,2,3}, "sdsd");
+//                SunEventBus.getDefault().post("change", "thread, changeBtnText");
             }
         }).start();
 //        SunBus.getDefault().postWait("1234", "MainActivity发的事件");
@@ -70,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(value = "change", threadMode = ThreadMode.MainThread)
-    private void changeBtnText(String str){
-        textView.setText(str);
+    private void changeBtnText(int arrays, String str){
+        textView.setText(arrays + "---" + str);
     }
 
 }
